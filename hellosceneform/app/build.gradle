@@ -51,10 +51,9 @@ android {
 }
 
 dependencies {
-    implementation "com.google.ar.sceneform:core:1.0.0"
-    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.0.0"
+    implementation "com.google.ar.sceneform:core:1.4.0"
+    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.4.0"
     implementation "com.android.support:appcompat-v7:27.1.1"
-    implementation "com.android.support:design:27.1.1"
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'
@@ -63,4 +62,3 @@ sceneform.asset('sampledata/models/andy.obj',
         'default',
         'sampledata/models/andy.sfa',
         'src/main/res/raw/andy')
-

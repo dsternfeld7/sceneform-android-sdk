@@ -1,4 +1,9 @@
 {
+   bound_relative_root: {
+      x: 0.5,
+      y: 0,
+      z: 0.5,
+   },
    materials: [
       {
          name: "unlit_material",
@@ -33,21 +38,10 @@
          "TexCoord",
          "Orientation",
       ],
+      collision: {},
       file: "sampledata/models/andy.obj",
       name: "andy",
-      suggested_collision: {
-         center: {
-            x: 0,
-            y: 0,
-            z: 0,
-         },
-         size: {
-            x: 1,
-            y: 1,
-            z: 1,
-         },
-         type: "Box",
-      },
+      recenter: "root",
    },
    samplers: [
       {
@@ -56,5 +50,5 @@
          pipeline_name: "andy.png",
       },
    ],
-   version: "0.51:1",
+   version: "0.52:1",
 }

@@ -25,16 +25,11 @@ import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Plane.Type;
 import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
-import com.google.ar.sceneform.Scene;
-import com.google.ar.sceneform.Scene.OnPeekTouchListener;
-import com.google.ar.sceneform.collision.CollisionShape;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.GesturePointersUtility;
 import com.google.ar.sceneform.ux.TransformableNode;
+import com.google.ar.sceneform.ux.TransformationSystem;
 
 /**
  * This is an example activity that uses the Sceneform UX package to make common AR tasks easier.
@@ -45,16 +40,7 @@ public class HelloSceneformActivity extends AppCompatActivity {
 
   private ArFragment arFragment;
   private ModelRenderable andyRenderable;
-
   private TwoFingerDragGestureRecognizer twoFingerDragGestureRecognizer;
-
-  private Scene.OnPeekTouchListener peekTouchListener = new OnPeekTouchListener() {
-    @Override
-    public void onPeekTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
-      arFragment.onPeekTouch(hitTestResult, motionEvent);
-      twoFingerDragGestureRecognizer.onTouch(hitTestResult, motionEvent);
-    }
-  };
 
   @Override
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -66,10 +52,10 @@ public class HelloSceneformActivity extends AppCompatActivity {
     setContentView(R.layout.activity_ux);
 
     arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-    arFragment.getArSceneView().getScene().setOnPeekTouchListener(peekTouchListener);
 
-    twoFingerDragGestureRecognizer = new TwoFingerDragGestureRecognizer(
-        new GesturePointersUtility(getResources().getDisplayMetrics()));
+    TransformationSystem transformationSystem = arFragment.getTransformationSystem();
+    twoFingerDragGestureRecognizer = new TwoFingerDragGestureRecognizer(transformationSystem.getGesturePointersUtility());
+    transformationSystem.addGestureRecognizer(twoFingerDragGestureRecognizer);
 
     // When you build a Renderable, Sceneform loads its resources in the background while returning
     // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
@@ -101,21 +87,14 @@ public class HelloSceneformActivity extends AppCompatActivity {
           AnchorNode anchorNode = new AnchorNode(anchor);
           anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-          // Get the collision shape from the renderable and clear it from the renderable itself.
-          CollisionShape collisionShape = andyRenderable.getCollisionShape();
-          Renderable renderable = andyRenderable.makeCopy();
-          renderable.setCollisionShape(null);
-
-
-          // Andy
+          // Andy.
           Node andy = new Node();
-          andy.setRenderable(renderable);
+          andy.setRenderable(andyRenderable);
 
           // Create the transformable andy and add it to the anchor.
           TransformableNode transformableNode = new MyTransformableNode(arFragment.getTransformationSystem(), twoFingerDragGestureRecognizer, andy);
           transformableNode.setParent(anchorNode);
           andy.setParent(transformableNode);
-          transformableNode.setCollisionShape(collisionShape);
           transformableNode.select();
         });
   }
